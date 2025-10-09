@@ -5,7 +5,7 @@ You can find the rules [here](https://officialgamerules.org/game-rules/checkers/
 
 Note: The rulebook mentions that "if you have a jump, you have no choice but to take it." For our checkers, you are not forced to take a jump if you don't want to
 
-In our program, red moves down, and black moves up.
+In our program, red moves down (from row 1-8), and black moves up (from row 8-1).
 
 The goal of this program is to get all possible moves for a piece. This component can then be integrated into a full checkers game
 
