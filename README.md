@@ -16,7 +16,7 @@ Compile the program and run using the following usage:
 
 * `filename` represents the board file you want to use
 
-* `piece` represents the square of a piece you want to move in the format "A1", where the letter represents column, and the number represents the row. The numbers  The letters and numbers move to the right and down respectively. The highest column is H, and the highest row is 8.
+* `piece` represents the square of a piece you want to move in the format "A1", where the letter represents column, and the number represents the row. The letters and numbers move to the right and down respectively. The highest column is H, and the highest row is 8.
 
 * `black_turn` represents whether the turn is black or red, where "1" represents black's turn, and "0" represents red's turn.
 
