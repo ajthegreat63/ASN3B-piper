@@ -33,7 +33,7 @@ Here is an example runthrough of the program:
 
 Output:
 ```
- A B C D E F G H
+   A B C D E F G H
   ┌───────────────┐
 1 │ │ │ │ │ │ │ │ │
 2 │ │○│ │ │ │ │ │ │
