@@ -89,14 +89,18 @@ public enum Cell
     public ArrayList<Integer> movement() {
         switch (this) {
             case RED:
+                // RED moves up the board (negative offsets)
                 return new ArrayList<>(List.of(RIGHT_UP, LEFT_UP));
             case BLACK:
-                return new ArrayList<>(List.of(RIGHT_UP, LEFT_UP));
-            case RED_KING, BLACK_KING:
+                // BLACK should move down the board (positive offsets)
+                return new ArrayList<>(List.of(RIGHT_DOWN, LEFT_DOWN));
+            case RED_KING:
+            case BLACK_KING:
+                // Kings can move both directions
                 return new ArrayList<>(List.of(RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP));
+            default:
+                return new ArrayList<>();
         }
-
-        return new ArrayList<>();
     }
 
     /**
@@ -119,12 +123,14 @@ public enum Cell
     public boolean isOpponent(Cell other) {
         switch (this) {
             case RED:
-                return other.equals(Cell.BLACK);
+            case RED_KING:
+                return other == Cell.BLACK || other == Cell.BLACK_KING;
             case BLACK:
-                return other.equals(Cell.RED);
+            case BLACK_KING:
+                return other == Cell.RED || other == Cell.RED_KING;
+            default:
+                return false;
         }
-
-        return false;
     }
 
     /**
@@ -135,14 +141,18 @@ public enum Cell
     public Cell promoteIfReachedEnd(int cell_index) {
         switch (this) {
             case RED:
-                if (RED_KING_START < cell_index && cell_index < RED_KING_END)
+                // indices 56..63 (inclusive start) are last row — include 56
+                if (cell_index >= RED_KING_START && cell_index < RED_KING_END)
                     return RED_KING;
                 break;
             case BLACK:
-                if (BLACK_KING_START < cell_index && cell_index < BLACK_KING_END)
+                // indices 0..7 are the first row — include 0
+                if (cell_index >= BLACK_KING_START && cell_index < BLACK_KING_END)
                     return BLACK_KING;
+                break;
+            default:
+                break;
         }
-
         return this;
     }
 
