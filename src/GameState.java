@@ -36,11 +36,10 @@ public class GameState
      */
     private GameState removePiece(int piece_index) {
         GameState newState = new GameState();
-
-        newState.cells = this.cells;
+        // create a copy of the cells list
+        newState.cells = new ArrayList<>(this.cells);
         newState.blackTurn = this.blackTurn;
         newState.cells.set(piece_index, Cell.EMPTY);
-
         return newState;
     }
 
@@ -51,19 +50,22 @@ public class GameState
      * @return Updated GameState
      */
     private GameState movePieceFlipTurn(
-        int moved_cell_start_index,
-        int moved_cell_end_index
-    ) {
-        GameState newState = new GameState();
+    	    int moved_cell_start_index,
+    	    int moved_cell_end_index
+    	) {
+    	    GameState newState = new GameState();
 
-        newState.cells = new ArrayList<>(this.cells);
+    	    newState.cells = new ArrayList<>(this.cells);
 
-        Cell moved_cell = this.cells.get(moved_cell_start_index);
-        newState.cells.set(moved_cell_start_index, Cell.EMPTY);
-        newState.cells.set(moved_cell_end_index, moved_cell.promoteIfReachedEnd(moved_cell_end_index));
+    	    Cell moved_cell = this.cells.get(moved_cell_start_index);
+    	    newState.cells.set(moved_cell_start_index, Cell.EMPTY);
+    	    newState.cells.set(moved_cell_end_index, moved_cell.promoteIfReachedEnd(moved_cell_end_index));
 
-        return newState;
-    }
+    	    // flip the turn for the new state
+    	    newState.blackTurn = !this.blackTurn;
+
+    	    return newState;
+    	}
 
     /**
      * Get the row index of a Cell
@@ -107,15 +109,27 @@ public class GameState
         for (int move : start_cell.movement()) {
             int next_index = curr_index + move;
 
+            // BOUNDS CHECK: next_index must be within [0, cells.size()-1]
+            if (next_index < 0 || next_index >= cells.size()) {
+                continue;
+            }
+
             if (cells.get(next_index).isEmpty()) {
+                // simple move (no capture)
                 nextMoves.add(this.movePieceFlipTurn(start_index, next_index));
 
             } else if (start_cell.isOpponent(cells.get(next_index))) {
-                next_index += move;
-
-                nextMoves.add(this.movePieceFlipTurn(start_index, next_index));
-
-                this.populateNextMoves(start_index, next_index, nextMoves);
+                int jumpIndex = next_index + move;
+                // ensure jump target is valid and empty
+                if (jumpIndex < 0 || jumpIndex >= cells.size()) {
+                    continue;
+                }
+                if (!cells.get(jumpIndex).isEmpty()) {
+                    continue;
+                }
+                nextMoves.add(this.movePieceFlipTurn(start_index, jumpIndex));
+                // recursively continue captures from the landing square
+                this.populateNextMoves(start_index, jumpIndex, nextMoves);
             }
         }
     }
